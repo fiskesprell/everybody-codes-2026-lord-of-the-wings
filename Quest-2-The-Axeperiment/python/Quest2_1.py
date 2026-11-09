@@ -1,135 +1,147 @@
-"""
+from operator import itemgetter    
 
-Yeah, the "algorithm" i spent 10 minutes on yesterday has reached its logical conclusion.
-Spoiler-alert: it does not work.
-This is only uploaded to document for myself that 
-"Yes, i programmed something 04/11/2026. Was it good? No. Did i do something? Yes."
-Thanks for reading my blog post.
+def read_input():
+    with open("my_notes.txt", "r") as file:
+        return(file.read())
 
-TODO:
-    Delete everything here
-    Actually think
-    Try again
+def reset_wins():
+    global one
+    global two
+    global three
+    global four
+    global five
 
+    one[0]      = 0
+    two[0]      = 0
+    three[0]    = 0
+    four[0]     = 0
+    five[0]     = 0
 
-
-xmy_notes = 
-    3<2 2>4 4<1 1<3 4<5 5<2 5>1 2>1 4<3 3>5
-    4>3 1<5 1<4 3>1 1<2 2<3 2<5 4<5 5>3 4>2
-    4>1 4<5 2>1 4>2 5>1 3>5 5>2 3>2 3>1 4<3
-    5>2 2>1 5>3 1<5 4<2 1>3 4>3 4<5 3<2 4>1
-    1>4 5<2 5>4 3>5 1<2 2>3 1>5 3>1 4<3 4<2
-    4<1 5<2 3>5 1<2 3>1 5<1 2>4 5<4 3>2 3>4
-    2>1 5>2 3>1 1<5 3<2 4>2 4<5 1<4 3<4 3<5
-    5<1 2>5 4>1 5<3 2<4 4>3 1<2 4>5 3>1 2>3
-    5>4 1<2 1<3 3>5 2<4 2<3 1<5 1<4 4<3 5>2
-    1<2 2>4 1<3 2>3 2>5 4>3 5>1 5<4 4>1 5>3
-
-    # 35124
-    # 43521
-    # 43512
-"""
-
-my_notes = "4<3 2<5 3>1 1>2 1<5 4<1 3>2 4<2 3>5 4<5 4>1 2>1 3>2 1<5 4>5 2<5 3>1 4>3 2<4 5<3 5>1 5>2 4>1 2<4 3>2 3<4 1>2 3>5 1<3 4>5"
-
-numA = "X"
-numB = "X"
-operator = "X"
-currentChecksum = ["1", "2"]
-finalChecksum = 0
-iterator = 0 # Reset iterator and currentChecksum after 40 iterations (do not include spaces in iterations)
-
-
-# Reset variables after (left/right)Bigger is called
-def resetVars():
-    numA = "X"
-    numB = "X"
-    operator = "X"
-
-def leftBigger():
-    if (numB in currentChecksum) == False and (numA in currentChecksum) == False:
-        currentChecksum.append(numA)
-        currentChecksum.append(numB)
-    elif (numB in currentChecksum) == True and (numA in currentChecksum) == False:
-        bIndex = currentChecksum.index(numB)
-        currentChecksum.insert(bIndex, numA)
-    elif (numB in currentChecksum) == False and (numA in currentChecksum) == True:
-        currentChecksum.append(numB)
-    elif (numB in currentChecksum) == True and (numA in currentChecksum) == True:
-        if (currentChecksum.index(numB) < currentChecksum.index(numA)): 
-            # if numA is placed more to the right (it needs to be left if it is bigger)
-            currentChecksum.remove(numA)
-            currentChecksum.insert(currentChecksum.index(numB), numA)
-    else:
-        print("Bro there was an error idk what to tell you. Yeah, in leftBigger(). Fix it.")
-
-
-
-def rightBigger():
-    if (numA in currentChecksum) == False and (numB in currentChecksum) == False:
-        currentChecksum.append(numB)
-        currentChecksum.append(numA)
-    elif (numA in currentChecksum) == True and (numB in currentChecksum) == False:
-        aIndex = currentChecksum.index(numA)
-        currentChecksum.insert(aIndex, numB) 
-    elif (numA in currentChecksum) == False and (numB in currentChecksum) == True:
-        currentChecksum.append(numA)
-    elif (numA in currentChecksum) == True and (numB in currentChecksum) == True:
-        if (currentChecksum.index(numA) < currentChecksum.index(numB)): 
-            # if numB is placed more to the right (it needs to be left if it is bigger)
-            currentChecksum.remove(numB)
-            currentChecksum.insert(currentChecksum.index(numA), numB)
-    else:
-        print("Bro there was an error idk what to tell you. Yeah, in rightBigger(). Fix it.")
-
-def rowFinished(current_checksum):
-
-    returnValue = int("".join(map(str, current_checksum))) #found on geeksforgeeks, thanks buddy.
+def reset_compares():
+    global comparator
+    global val_1
+    global val_2
+    global valid_char_in_row
     
-    iterator = 0
-    currentChecksum = ["1", "2"]
+    val_1       = ""
+    val_2       = ""
+    comparator  = ""
+    valid_char_in_row = 0
 
-    print(returnValue)
-    return returnValue
 
-for character in my_notes:
-    if character == " ":
-        continue
-    elif numA == "X":
-        numA = character
-    elif operator == "X":
-        operator = character
-    elif numB == "X":
-        numB = character
+def give_point(number):
+    global one
+    global two
+    global three
+    global four
+    global five
+
+    match number:
+        case "1":
+            one[0]      = one[0]     + 1
+        case "2":
+            two[0]      = two[0]     + 1
+        case "3":
+            three[0]    = three[0]   + 1
+        case "4":
+            four[0]     = four[0]    + 1
+        case "5":
+            five[0]     = five[0]    + 1
+
+def compare():
+    global comparator
+    global comparison_counter
+
+    if comparator == ">":
+        give_point(val_1)
     else:
-        if operator == ">":
-            leftBigger()
-            resetVars()
-        else: 
-            rightBigger()
-            resetVars()
+        give_point(val_2)
     
-    if iterator > 40:
-        finalChecksum += rowFinished(currentChecksum)
+    comparison_counter += 1
+    reset_compares()
+
+def checksum_list_to_number(checksum_list):
+    return_number = []                          # return_number = [one[X,1], two[X,2], three[X,3] etc.]
+    for number in checksum_list:
+        return_number.append(number[1])
+                                                # return_number = [1, 4, 5, 2, 3]
+    return_number = ''.join(return_number)      # return_number = "14523"
+    return_number = int(return_number)          # return_number = 14523
+    return return_number
+
+
+def group_complete():
+    global checksum_total
+    global comparison_counter
+    global one
+    global two
+    global three
+    global four
+    global five
+
+    # find checksum number
+    checksum_list = [one, two, three, four, five]
+    checksum_list = sorted(checksum_list, key=itemgetter(0), reverse = True)
+    
+    # extract
+    checksum_number = checksum_list_to_number(checksum_list)
+    
+    # add it to total
+    checksum_total += checksum_number
+    
+    # resetting for good measure
+    comparison_counter = 0
+    reset_wins()
+
+def parse_character(character):
+    global val_1
+    global val_2
+    global comparator
+    global valid_char_in_row
+
+    valid_characters = ["1", "2", "3", "4", "5", ">", "<"]
+
+    if character in valid_characters:
+        match valid_char_in_row:
+            case 0:
+                val_1 = character
+            case 1:
+                comparator = character
+            case 2:
+                val_2 = character
+        valid_char_in_row += 1
     else:
-        iterator += 1
+        valid_char_in_row = 0
 
 
-print(finalChecksum)
+
+if __name__ == '__main__':
+    my_notes = read_input()
+
+    # [0] = Wins (variable)
+    # [1] = numerical value (do not change, please)
+    one     = [0, "1"]
+    two     = [0, "2"]
+    three   = [0, "3"]
+    four    = [0, "4"]
+    five    = [0, "5"]
+
+    valid_char_in_row   = 0
+    comparison_counter  = 0
+    checksum_total      = 0
+    comparator          = ""
+    val_1               = ""
+    val_2               = ""
+
+    for character in my_notes:
+
+        if valid_char_in_row < 3:
+            parse_character(character)
+
+        if valid_char_in_row == 3:
+            compare()
         
-        
+        if (comparison_counter > 9):
+            group_complete()
     
-"""
-    Terrible implementation made in 10 minutes (there is !!DEFINITELY!! a better way to do this lol.)
-    Need to do:
-    - finish logic of leftBigger & rightBigger.
-        - using leftBigger as example:
-            Go through all numbers in currentChecksum -> check if left(numA) is more to the left than right(numB)
-            if more to the left: do nothing
-            if more to the right: place numA directly to left of numB
-    - call resetVars() once numA, numB and operator is filled -> after left/rightBigger is called
-    - once 40 characters are parsed -> turn currentChecksum into proper number (eg. 53421) -> add that to finalChecksum, reset 0-40 iterator.
-    - once all character in my_notes are parsed -> print(finalChecksum)
-
-    should work? (no.)
-"""
+    print(checksum_total)
