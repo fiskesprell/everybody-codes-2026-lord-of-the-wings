@@ -1,7 +1,7 @@
 from operator import itemgetter    
 
 def read_input():
-    with open("my_notes.txt", "r") as file:
+    with open("my_notes_p1.txt", "r") as file:
         return(file.read())
 
 def reset_wins():
