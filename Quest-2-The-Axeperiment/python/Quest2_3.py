@@ -5,8 +5,7 @@ def read_input():
         return(file.read())
 
 def read_test_input():
-    return """
-    3>1 1>2 1<5 4<2 3>5
+    return """3>1 1>2 1<5 4<2 3>5
     2>1 2<5 3>1 4>3 2<4 5<3
     5>1 3<4 1>2 3>5
     """
@@ -246,6 +245,23 @@ if __name__ == '__main__':
             compare()
         
         if (last_char_was_new_line and numbers_have_points()): # Might have found a better way.
+            print(f"""
+                Just landed in LAST_IF.
+                #--------- Stats ---------#
+                current_row = {current_row}
+                one     = {one}
+                two     = {two}
+                three   = {three}
+                four    = {four}
+                five    = {five}
+                six     = {six}
+                seven   = {seven}
+                eight   = {eight}
+                nine    = {nine} 
+
+
+                
+            """)
             group_complete()
             last_char_was_new_line = False
 
