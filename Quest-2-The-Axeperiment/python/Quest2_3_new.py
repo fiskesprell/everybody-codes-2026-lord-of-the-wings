@@ -51,10 +51,10 @@ class Alloy:
 
 class Battle_manager:
     def __init__(self)              -> None:
-        self.accepted_characters    : list[str]     = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ">", "<", "\n"]
-        self.current_battle_row     : list[str]     = []
+        self.current_battle_row     : list[str]     = [] # Should look like: ["1>2", "2>3", "3>4"]
         self.all_checksums          : list[str]     = [] # Should look like: ["12345", "54321"] TODO: Get total by iterating this list > convert to numbers
         self.current_checksum       : list[str]     = []
+        self.current_battle         : str           = "" # Should look like "3<4" - MAX_LENGTH is 3 characters.
         self.current_char           : str           = ""
     
     def check_for_new_line(self.current_char) -> bool:
@@ -64,18 +64,11 @@ class Battle_manager:
         else:
             return False
 
-    def parse_character(self):
+    def parse_character(self, character: str) -> None:
         
-        if char not in self.accepted_characters:
-            continue
+
         
-        if check_for_new_line(char):
-            # close_battle_row()
-            # Takes all battles in current_battle_row 
-            # -> iterate them, stop when all alloys are in correct place inside current_checksum
-            # -> convert current_checksum from string to number
-            # -> add current_checksum to all_checksums 
-            close_battle_row() 
+
         
         if 
         
@@ -110,20 +103,45 @@ if __name__ == "__main__":
     
     input = return_test_input()
     battle_manager = Battle_manager()
+    accepted_characters    : list[str]     = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ">", "<", "\n"]
 
-    one     = Alloy("1")
-    two     = Alloy("2")
-    three   = Alloy("3")
-    four    = Alloy("4")
-    five    = Alloy("5")
-    six     = Alloy("6")
-    seven   = Alloy("7")
-    eight   = Alloy("8")
-    nine    = Alloy("9")
+    one     : Alloy      = Alloy(alloy_number="1")
+    two     : Alloy      = Alloy(alloy_number="2")
+    three   : Alloy      = Alloy(alloy_number="3")
+    four    : Alloy      = Alloy(alloy_number="4")
+    five    : Alloy      = Alloy(alloy_number="5")
+    six     : Alloy      = Alloy(alloy_number="6")
+    seven   : Alloy      = Alloy(alloy_number="7")
+    eight   : Alloy      = Alloy(alloy_number="8")
+    nine    : Alloy      = Alloy(alloy_number="9")
 
 
     for char in input:
+        if char not in accepted_characters:
+            continue
+
+        if check_for_new_line(char):
+            # Takes all battles in current_battle_row 
+            # -> iterate them, stop when all alloys are in correct place inside current_checksum
+            # -> convert current_checksum from string to number
+            # -> add current_checksum to all_checksums 
+            battle_manager.close_battle_row() # TODO: Implement
+            continue
         
-        battle_manager.parse(char)
-
-
+        if (we_have_a_X<Y):
+            # Takes "X>Y"
+            # If comparator == >:
+            #   X gets Y in its im_larger_than
+            #   Y gets X in its im_smaller_than
+            #   else: opposite
+            # Adds "X>Y" to current_battle_row
+            # Clears "X>Y" from current_battle
+            # Clears correct_characters_in_a_row value
+            battle_manager.parse_battle()
+            continue
+        
+        battle_manager.parse_character(char)
+    
+    battle_manager.close_battle_row() # Running again
+    
+    print(battle_manager.return_total_checksum())
