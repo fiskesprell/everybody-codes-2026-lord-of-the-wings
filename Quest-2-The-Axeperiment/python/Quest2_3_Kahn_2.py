@@ -6,11 +6,17 @@ class Alloy:
         self.im_smaller_than    : list[str]     = []
         self.im_larger_than     : list[str]     = []
     
+    def is_used(self) -> bool:
+        return not ((0 == len(self.im_larger_than)) and (0 == len(self.im_smaller_than)))
+    
     def get_im_smaller_than(self) -> list[str]:
         return self.im_smaller_than
     
     def get_im_larger_than(self) -> list[str]:
         return self.im_larger_than 
+    
+    def get_alloy_number(self) -> str:
+        return self.alloy_number
 
     def reset_values(self) -> None:
         self.im_smaller_than    = []
@@ -132,7 +138,6 @@ def assign_values(
         print(f"Error in assign_values - (unknown value) battle[2] = {battle[2]} <- 何これ？")
 
 
-""" TODO: Implement at end
 def kahns_algorithm( 
         one     : Alloy,
         two     : Alloy,
@@ -145,39 +150,24 @@ def kahns_algorithm(
         nine    : Alloy
     ) -> int:
 
+    all_alloys: list[Alloy] = [one, two, three, four, five, six, seven, eight, nine]
+    used_alloys: list[Alloy] = []
 
-    # Remember to reset all Alloys at end
-    reset_all_alloys()
+    # Remove unused alloys
+    for alloy in all_alloys:
+        if alloy.is_used():
+            used_alloys.append(alloy)
 
-    return topological_order
-"""
+    
 
-def reset_all_alloys(
-        one     : Alloy,
-        two     : Alloy,
-        three   : Alloy,
-        four    : Alloy,
-        five    : Alloy,
-        six     : Alloy,
-        seven   : Alloy,
-        eight   : Alloy,
-        nine    : Alloy
-    ) -> None:
-    one.reset_values()
-    two.reset_values()
-    three.reset_values()
-    four.reset_values()
-    five.reset_values()
-    six.reset_values()
-    seven.reset_values()
-    eight.reset_values()
-    nine.reset_values()
+    return 1 #TODO: change
+
 
 # ---------------+ Main +-----------------------+ Main +---------------- #
 
 if __name__ == "__main__":
     
-    input = return_input()
+    input = return_test_input()
     accepted_characters    : list[str]          = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ">", "<", "\n"]
     current_battle_row     : str                = ""
     all_battle_rows        : list[str]          = [] # should only contain current_battle_rows
@@ -223,46 +213,10 @@ if __name__ == "__main__":
             current_battle += char
             i += 1
         
-        print(f"""
-            +------+-----+ ROUND {round_number} OVER +----+-----+
-            |   Stats:
-            |       - one
-            |           larger_than  : {one.get_im_larger_than()}
-            |           smaller_than : {one.get_im_smaller_than()}
-            |       - two
-            |           larger_than  : {two.get_im_larger_than()}
-            |           smaller_than : {two.get_im_smaller_than()}
-            |       - three
-            |           larger_than  : {three.get_im_larger_than()}
-            |           smaller_than : {three.get_im_smaller_than()}
-            |       - four
-            |           larger_than  : {four.get_im_larger_than()}
-            |           smaller_than : {four.get_im_smaller_than()}
-            |       - five
-            |           larger_than  : {five.get_im_larger_than()}
-            |           smaller_than : {five.get_im_smaller_than()}
-            |       - six
-            |           larger_than  : {six.get_im_larger_than()}
-            |           smaller_than : {six.get_im_smaller_than()}
-            |       - seven
-            |           larger_than  : {seven.get_im_larger_than()}
-            |           smaller_than : {seven.get_im_smaller_than()}
-            |       - eight                         
-            |           larger_than  : {eight.get_im_larger_than()}
-            |           smaller_than : {eight.get_im_smaller_than()}
-            |       - nine
-            |           larger_than  : {nine.get_im_larger_than()}
-            |           smaller_than : {nine.get_im_smaller_than()}
-            +------------+--------------+-----------+--------------+
         
-            """)
-        round_number += 1
-        if round_number > 3:
-            break
         
-        """
-        all_checksums = kahns_algorithm(one, two, three, four, five, six, seven, eight, nine) #TODO: Implement
-        """
+        all_checksums.append(kahns_algorithm(one, two, three, four, five, six, seven, eight, nine)) #TODO: Implement
+        
     print(all_checksums)
 
 
