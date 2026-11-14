@@ -1,269 +1,226 @@
-from operator import itemgetter
+# ---------------+ Classes +----------------+ Classes +----------------- #
 
-def read_input():
-    with open("my_notes_p2.txt", "r") as file:
+class Alloy:
+    def __init__(self, alloy_number: str):
+        self.alloy_number       : str           = alloy_number
+        self.im_smaller_than    : list[str]     = []
+        self.im_larger_than     : list[str]     = []
+    
+    def is_used(self) -> bool:
+        return not ((0 == len(self.im_larger_than)) and (0 == len(self.im_smaller_than)))
+    
+    def get_im_smaller_than(self) -> list[str]:
+        return self.im_smaller_than
+    
+    def get_im_larger_than(self) -> list[str]:
+        return self.im_larger_than 
+    
+    def get_alloy_number(self) -> str:
+        return self.alloy_number
+    
+    def remove_from_smaller_than(self, number: str) -> None:
+        self.im_smaller_than.remove(number)
+    
+    def parse_battle(self, battle: str):
+        # Battle must be in string format like: "1>2"
+        im_on_the_right : bool  = False
+
+        # Check whether current alloy is on left or right
+        if (battle[0] == self.alloy_number):
+            im_on_the_right = False
+        elif (battle[2] == self.alloy_number):
+            im_on_the_right = True
+        else:
+            print("Error #1 - battle wrong format or number not in battle")
+            print(f"""
+                    Battle          = {battle}
+                    Alloy_number    = {self.alloy_number}
+                    """)
+        
+        match im_on_the_right:
+            case True:
+                if battle[1] == "<":
+                    self.im_larger_than.append(battle[0])
+                elif battle[1] == ">":
+                    self.im_smaller_than.append(battle[0])
+                else:
+                    print("Error #2 - in Alloy > parse_battle > match im_on_the_right > case TRUE")
+                    print(f"""
+                    Battle          = {battle}
+                    Alloy_number    = {self.alloy_number}
+                    """)
+
+            case False:
+                if battle[1] == ">":
+                    self.im_larger_than.append(battle[2])
+                elif battle[1] == "<":
+                    self.im_smaller_than.append(battle[2])
+                else:
+                    print("Error #3 - in Alloy > parse_battle > match im_on_the_right > case FALSE")
+                    print(f"""
+                    Battle          = {battle}
+                    Alloy_number    = {self.alloy_number}
+                    """)
+
+
+# ---------------+ Functions +----------------+ Functions +------------- #
+
+def return_input():
+    with open("my_notes_p3.txt", "r") as file:
         return(file.read())
 
-def read_test_input():
-    return """3>1 1>2 1<5 4<2 3>5
-    2>1 2<5 3>1 4>3 2<4 5<3
-    5>1 3<4 1>2 3>5
-    """
-    # 3 > 1         - 1 = 0, 2 = 0, 3 = 1, 4 = 0, 5 = 0
-    # 1 > 2         - 1 = 1, 2 = 0, 3 = 1, 4 = 0, 5 = 0
-    # 1 < 5         - 1 = 1, 2 = 0, 3 = 1, 4 = 0, 5 = 1
-    # 4 < 2         - 1 = 1, 2 = 1, 3 = 1, 4 = 0, 5 = 1
-    # 3 > 5         - 1 = 1, 2 = 0, 3 = 2, 4 = 0, 5 = 1
+def assign_values(
+        battle  : str,  # looks like "4>2"
+        one     : Alloy,
+        two     : Alloy,
+        three   : Alloy,
+        four    : Alloy,
+        five    : Alloy,
+        six     : Alloy,
+        seven   : Alloy,
+        eight   : Alloy,
+        nine    : Alloy
+    ) -> None:
 
-    # logically speaking:
-    # 3 5 1 2 4 
-
-def add_current_comparison_to_list():
-    global val_1
-    global val_2
-    global comparator
-    global current_row
-
-    current_row.append(f"{val_1}{comparator}{val_2}")
-
-def give_bonus_point(value_1, value_2):
-    global current_row
-    
-
-    # finds the one comparison that uses both values
-    # checks which one wins
-    # awards that value a bonus point
-    for comparison in current_row:
-        if (((comparison[0] == value_1) and (comparison[2] == value_2)) or ((comparison[0] == value_2) and (comparison[2] == value_1))):
-            if (comparison[1] == ">"):
-                give_point(comparison[0])
-            else:
-                give_point(comparison[2])
-
-
-def reset_wins():
-    global one
-    global two
-    global three
-    global four
-    global five
-    global six
-    global seven
-    global eight
-    global nine
-    global current_row
-
-    one[0]      = 0
-    two[0]      = 0
-    three[0]    = 0
-    four[0]     = 0
-    five[0]     = 0
-    six[0]      = 0
-    seven[0]    = 0
-    eight[0]    = 0
-    nine[0]     = 0
-    current_row = []
-
-def reset_compares():
-    global comparator
-    global val_1
-    global val_2
-    global valid_char_in_row
-    
-    val_1       = ""
-    val_2       = ""
-    comparator  = ""
-    valid_char_in_row = 0
-
-def numbers_have_points():
-    global one
-    global two
-    global three
-    global four
-    global five
-    global six
-    global seven
-    global eight
-    global nine
-
-    if ( 0 == (one[0] + two[0] + three[0] + four[0] + five[0] + six[0] + seven[0] + eight[0] + nine[0]) ):
-        return False
+    if battle[0] == "1":
+        one.parse_battle(battle)
+    elif battle[0] == "2":
+        two.parse_battle(battle)
+    elif battle[0] == "3":
+        three.parse_battle(battle)
+    elif battle[0] == "4":
+        four.parse_battle(battle)
+    elif battle[0] == "5":
+        five.parse_battle(battle)
+    elif battle[0] == "6":
+        six.parse_battle(battle)
+    elif battle[0] == "7":
+        seven.parse_battle(battle)
+    elif battle[0] == "8":
+        eight.parse_battle(battle)
+    elif battle[0] == "9":
+        nine.parse_battle(battle)
     else:
-        return True
+        print(f"Error in assign_values - (unknown value) battle[0] = {battle[0]} <- 何これ？")
 
-def give_point(number):
-    global one
-    global two
-    global three
-    global four
-    global five
-    global six
-    global seven
-    global eight
-    global nine
-
-    match number:
-        case "1":
-            one[0]      = one[0]     + 1
-        case "2":
-            two[0]      = two[0]     + 1
-        case "3":
-            three[0]    = three[0]   + 1
-        case "4":
-            four[0]     = four[0]    + 1
-        case "5":
-            five[0]     = five[0]    + 1
-        case "6":
-            six[0]      = six[0]     + 1
-        case "7":
-            seven[0]    = seven[0]   + 1
-        case "8":
-            eight[0]    = eight[0]   + 1
-        case "9":
-            nine[0]     = nine[0]    + 1
-
-def compare():
-    global comparator
-
-    if comparator == ">":
-        give_point(val_1)
+    if battle[2] == "1":
+        one.parse_battle(battle)
+    elif battle[2] == "2":
+        two.parse_battle(battle)
+    elif battle[2] == "3":
+        three.parse_battle(battle)
+    elif battle[2] == "4":
+        four.parse_battle(battle)
+    elif battle[2] == "5":
+        five.parse_battle(battle)
+    elif battle[2] == "6":
+        six.parse_battle(battle)
+    elif battle[2] == "7":
+        seven.parse_battle(battle)
+    elif battle[2] == "8":
+        eight.parse_battle(battle)
+    elif battle[2] == "9":
+        nine.parse_battle(battle)
     else:
-        give_point(val_2)
+        print(f"Error in assign_values - (unknown value) battle[2] = {battle[2]} <- 何これ？")
+
+
+def kahns_algorithm( 
+        one     : Alloy,
+        two     : Alloy,
+        three   : Alloy,
+        four    : Alloy,
+        five    : Alloy,
+        six     : Alloy,
+        seven   : Alloy,
+        eight   : Alloy,
+        nine    : Alloy
+    ) -> int:
+
+    all_alloys      : list[Alloy]   = [one, two, three, four, five, six, seven, eight, nine]
+    used_alloys     : list[Alloy]   = []
+    return_checksum : str           = ""
+
+    # Remove unused alloys
+    for alloy in all_alloys:
+        if alloy.is_used():
+            used_alloys.append(alloy)
     
-    reset_compares()
+    while (0 != len(used_alloys)):
+        # Find alloy A with no bigger alloys
+        # remove A from the im_smaller_than of every alloy on its im_bigger_than list
+        # add A's number to return_checksum
+        # remove A from used_alloys
+        for alloy in used_alloys:
+            if (0 == len(alloy.get_im_smaller_than())):
+                alloy_was_larger_than: list[str] = alloy.get_im_larger_than()
+                for nested_alloy in used_alloys:
+                    if nested_alloy.get_alloy_number() in alloy_was_larger_than:
+                        nested_alloy.remove_from_smaller_than(alloy.get_alloy_number())
+                        
+                return_checksum += alloy.get_alloy_number()
+                used_alloys.remove(alloy)
+                break
 
-def checksum_list_to_number(checksum_list):
-    return_number = []                          # return_number = [one[X,1], two[X,2], three[X,3] etc.]
-    for number in checksum_list:
-        return_number.append(number[1])
-                                                # return_number = [1, 4, 5, 2, 3]
-    return_number = ''.join(return_number)      # return_number = "14523"
-    return_number = int(return_number)          # return_number = 14523
-    return return_number
 
 
-def group_complete():
-    global checksum_total
-    global one
-    global two
-    global three
-    global four
-    global five
-    global six
-    global seven
-    global eight
-    global nine
+    return int(return_checksum)
+
+
+# ---------------+ Main +-----------------------+ Main +---------------- #
+
+if __name__ == "__main__":
     
-    # --- How I plan to tackle this task ---
-    # 1. Research:
-    #       Do all lines use the numbers 1-9 (like p2) or are some numbers not used in some lines?
-    # 1a. if answer to 1 is no -> add logic to check numbers_used
-    # 2. Change logic FROM comparison_counter > 34 TO "if '\n' in mystring"
-    #   NOTE: Not working currently? Not sure. Check output.
+    input = return_input()
 
-    # find checksum number
-    checksum_list = [one, two, three, four, five]
-    #    checksum_list = [one, two, three, four, five, six, seven, eight, nine]
+    accepted_characters    : list[str]          = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ">", "<", "\n"]
+    current_battle_row     : str                = ""
+    all_battle_rows        : list[str]          = [] # should only contain current_battle_rows
+    all_checksums          : list[int]          = [] # should look like: [123456789, 912345678, 987654321]
+    total_checksum         : int                = 0
 
-    checksum_list = sorted(checksum_list, key=itemgetter(0), reverse = True)
-    print(f"1 - {checksum_list}")
-    # After checksum_list is sorted
-    # Check top 2 (always have the same points)
-    # Award bonus point to the stronger one
-    # Then re-sort in case checksum_list[1] > checksum_List[0]
-    give_bonus_point(checksum_list[0][1], checksum_list[1][1])
-    checksum_list = sorted(checksum_list, key=itemgetter(0), reverse = True)
-    print(f"2 - {checksum_list}")
+    # Populate all_battle_rows
+    for char in input:
+        if char not in accepted_characters:
+            continue
 
+        if "\n" != char:
+            current_battle_row += (char)
+        else:
+            all_battle_rows.append(current_battle_row)
+            current_battle_row = ""
 
-    
-    # extract
-    checksum_number = checksum_list_to_number(checksum_list)
-    
-    # add it to total
-    checksum_total += checksum_number
-    
-    # resetting for good measure
-    reset_wins()
+    all_battle_rows.append(current_battle_row)
 
-def parse_character(character):
-    global val_1
-    global val_2
-    global comparator
-    global valid_char_in_row
-    global last_char_was_new_line
+    for row in all_battle_rows:
+        one     : Alloy      = Alloy(alloy_number="1")
+        two     : Alloy      = Alloy(alloy_number="2")
+        three   : Alloy      = Alloy(alloy_number="3")
+        four    : Alloy      = Alloy(alloy_number="4")
+        five    : Alloy      = Alloy(alloy_number="5")
+        six     : Alloy      = Alloy(alloy_number="6")
+        seven   : Alloy      = Alloy(alloy_number="7")
+        eight   : Alloy      = Alloy(alloy_number="8")
+        nine    : Alloy      = Alloy(alloy_number="9")
 
-    valid_characters = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ">", "<"]
-
-    if character in valid_characters:
-        match valid_char_in_row:
-            case 0:
-                val_1 = character
-            case 1:
-                comparator = character
-            case 2:
-                val_2 = character
-        valid_char_in_row += 1
-    else:
-        valid_char_in_row = 0
-
-    if character == '\n':
-        last_char_was_new_line = True
-
-
-
-if __name__ == '__main__':
-    my_notes = read_test_input()
-
-    # [0] = Wins (variable)
-    # [1] = numerical value (do not change, please)
-    one     = [0, "1"]
-    two     = [0, "2"]
-    three   = [0, "3"]
-    four    = [0, "4"]
-    five    = [0, "5"]
-    six     = [0, "6"]
-    seven   = [0, "7"]
-    eight   = [0, "8"]
-    nine    = [0, "9"]
-
-    valid_char_in_row   = 0
-    checksum_total      = 0
-    comparator          = ""
-    val_1               = ""
-    val_2               = ""
-    current_row         = []
-    last_char_was_new_line = False
-
-    for character in my_notes:
-
-        if valid_char_in_row < 3:
-            parse_character(character)
-
-        if valid_char_in_row == 3:
-            add_current_comparison_to_list()
-            compare()
+        current_battle : str = ""
+        i = 0
+        for char in row:
+            if 3 == i:
+                assign_values(current_battle, one, two, three, four, five, six, seven, eight, nine)
+                current_battle = ""
+                i = 0
+            
+            current_battle += char
+            i += 1
         
-        if (last_char_was_new_line and numbers_have_points()): # Might have found a better way.
-            print(f"""
-                Just landed in LAST_IF.
-                #--------- Stats ---------#
-                current_row = {current_row}
-                one     = {one}
-                two     = {two}
-                three   = {three}
-                four    = {four}
-                five    = {five}
-                six     = {six}
-                seven   = {seven}
-                eight   = {eight}
-                nine    = {nine} 
-
-
-                
-            """)
-            group_complete()
-            last_char_was_new_line = False
-
+        # MISSING THIS LINE MADE ME WASTE A LOT OF TIME
+        # I got better at debugging, so it's fine I guess.. 
+        assign_values(current_battle, one, two, three, four, five, six, seven, eight, nine)
+        
+        all_checksums.append(kahns_algorithm(one, two, three, four, five, six, seven, eight, nine))
+        
+    for number in all_checksums:
+        total_checksum += number
     
-    print(checksum_total)
+    print(total_checksum)
