@@ -1,60 +1,54 @@
-from typing import Any
-
+# +--------------+ FUNCTIONS +-------functions-------+ FUNCTIONS +--------------+
 
 def return_votes() -> str:
     with open("p2_test_notes.txt", "r") as file:
         return file.read()
 
-def extract_votes(votes_file: str) -> list[str]:
-    list_of_votes: list[str] = []
-    current_vote: str = ""
+def extract_votes(votes_file: str) -> list[list[str]]:
+    accepted_numbers    : list[str]         = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+    
+    ones_and_twos       : list[list[str]]   = []
+    current_one_and_two : list[str]         = []
+    
+    current_one         : str               = ""
+    current_two         : str               = ""
+    
+    which_number        : int               = 1
 
     for char in votes_file:
 
-        match char:
-            case "\n":
-                list_of_votes.append(current_vote)
-                current_vote = ""
-            case _:
-                current_vote += char
-    
-    list_of_votes.append(current_vote)
-    
-    return list_of_votes
+        if "\n" == char:
+            ones_and_twos.append([current_one, current_two])
+            current_one = ""
+            current_two = ""
+            which_number = 1
+        
+        if ' ' == char:
+            which_number = 2
 
-def ISO_to_decimal(vote: str) -> int:
-    # Example iso: 'ISO-3210 7654'
-    # one       =    3210
-    # one_1     = ---^ ^
-    # one_3     = -----'
-    # two       =    7654
-    # two_1     = ---^ ^
-    # two_3     = -----'
-
-    one_1: int = int(vote[4])
-    one_2: int = int(vote[5])
-    one_3: int = int(vote[6])
-    one_4: int = int(vote[7])
-    two_1: int = int(vote[9])
-    two_2: int = int(vote[10])
-    two_3: int = int(vote[11])
-    two_4: int = int(vote[12])
-
-    first_number    : int    = (two_1 * (one_1 ** 3)) 
-    second_number   : int    = (two_2 * (one_2 ** 2)) 
-    third_number    : int    = (two_3 * (one_3 ** 1)) 
-    fourth_number   : int    = (two_4 * (one_4 ** 0))
+        if char in accepted_numbers:
+            match which_number:
+                case 1:
+                    current_one += char
+                case 2:
+                    current_two += char
     
-    return first_number + second_number + third_number + fourth_number
+    ones_and_twos.append([current_one, current_two])
+                
+    return ones_and_twos
+
+# TODO: Implement
+def ISO_to_decimal(vote: list[str]) -> int:
+    # Example iso: 'ISO-34 140856'
+
+    
+    return 1 
 
 
 if __name__ == '__main__':
-    all_votes               : str           = return_votes()
-    list_of_votes           : list[str]     = extract_votes(votes_file=all_votes)
-    result_of_votes         : list[int]     = []
+    votes_file              : str               = return_votes()
+    seperated_iso_numbers   : list[list[str]]   = extract_votes(votes_file=votes_file)
+    result_of_votes         : list[int]         = []
 
-    for vote in list_of_votes:
+    for vote in seperated_iso_numbers:
         result_of_votes.append(ISO_to_decimal(vote))
-
-    print(result_of_votes)
-    print(sum(result_of_votes))
