@@ -1,18 +1,14 @@
 # +--------------+ FUNCTIONS +-------functions-------+ FUNCTIONS +--------------+
 
 def return_votes() -> str:
-    with open("p2_test_notes.txt", "r") as file:
+    with open("p2_notes.txt", "r") as file:
         return file.read()
 
 def extract_votes(votes_file: str) -> list[list[str]]:
     accepted_numbers    : list[str]         = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-    
-    ones_and_twos       : list[list[str]]   = []
-    current_one_and_two : list[str]         = []
-    
+    ones_and_twos       : list[list[str]]   = []    
     current_one         : str               = ""
     current_two         : str               = ""
-    
     which_number        : int               = 1
 
     for char in votes_file:
@@ -37,12 +33,30 @@ def extract_votes(votes_file: str) -> list[list[str]]:
                 
     return ones_and_twos
 
-# TODO: Implement
 def ISO_to_decimal(vote: list[str]) -> int:
     # Example iso: 'ISO-34 140856'
-
+    # list[0] ----------^^ ^^^^^^
+    # list[1] ------------´´´´´´
     
-    return 1 
+    row_1   : str     = vote[0]
+    row_2   : str     = vote[1]
+
+    if (len(row_1) != len(row_2)):
+        new_row_1   : str   = ""
+        iterator    : int   = len(row_1) - 1
+        while len(new_row_1) != len(row_2):
+            new_row_1 += row_1[iterator]
+            if (iterator == 0):
+                iterator = (len(row_1) - 1)
+            else:
+                iterator -= 1
+        row_1 = new_row_1[::-1]
+    
+    converted_fragment : list[int] = []
+    for i in range(0, len(row_2)):
+        converted_fragment.append((int(row_2[i]) * (int(row_1[i]) ** (len(row_2) - (i + 1)))))
+    
+    return sum(converted_fragment) 
 
 
 if __name__ == '__main__':
@@ -52,3 +66,5 @@ if __name__ == '__main__':
 
     for vote in seperated_iso_numbers:
         result_of_votes.append(ISO_to_decimal(vote))
+    
+    print(sum(result_of_votes))
